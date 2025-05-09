@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuREE - Quasi Real Environment Emulator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.cdnjs.com/css?family=Montserrat:400,500,600,700" rel="stylesheet">
+    <link href="https://fonts.cdnjs.com/css?family=DM+Sans:400,500,700" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #f2f2f7;
+            --text-color: #333333;
+            --light-text: #888888;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', 'Montserrat', 'Circular', 'Avenir Next', 'Proxima Nova', sans-serif;
+            letter-spacing: -0.01em;
+        }
+        
+        body {
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        section {
+            padding: 80px 0;
+            scroll-margin-top: 80px;
+        }
+        
+        h1, h2, h3, h4 {
+            font-weight: 600;
+            font-family: 'DM Sans', 'Montserrat', sans-serif;
+        }
+        
+        h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            letter-spacing: -0.03em;
+            font-weight: 700;
+        }
+        
+        h2 {
+            font-size: 36px;
+            margin-bottom: 40px;
+            text-align: center;
+            letter-spacing: -0.02em;
+        }
+        
+        h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            letter-spacing: -0.01em;
+        }
+        
+        p {
+            margin-bottom: 20px;
+            font-size: 18px;
+            line-height: 1.7;
+            font-family: 'Montserrat', 'SF Pro Text', sans-serif;
+            font-weight: 400;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 14px 28px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            letter-spacing: 0.02em;
+            font-family: 'DM Sans', 'Montserrat', sans-serif;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 102, 204, 0.3);
+        }
+        
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-family: 'DM Sans', sans-serif;
+            letter-spacing: -0.03em;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            background-color: var(--white);
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+        
+        .hero-content {
+            max-width: 600px;
+            z-index: 1;
+        }
+        
+        .hero-image {
+            position: absolute;
+            right: -100px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60%;
+            max-width: 700px;
+            z-index: 0;
+            opacity: 0.9;
+        }
+        
+        .subtitle {
+            font-size: 24px;
+            color: var(--light-text);
+            margin-bottom: 30px;
+        }
+        
+        /* Features Section */
+        .features {
+            background-color: var(--secondary-color);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        .feature-card {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            font-size: 40px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        /* Advantages Section */
+        .advantages {
+            background-color: var(--white);
+        }
+        
+        .advantage-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 40px;
+        }
+        
+        .advantage-icon {
+            font-size: 30px;
+            color: var(--primary-color);
+            margin-right: 20px;
+            padding: 10px;
+            background-color: rgba(0, 102, 204, 0.1);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Product Gallery */
+        .gallery {
+            background-color: var(--secondary-color);
+            text-align: center;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .gallery-item {
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background-color: var(--white);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.03);
+        }
+        
+        .gallery-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light-text);
+        }
+        
+        .gallery-caption {
+            padding: 15px;
+            text-align: left;
+        }
+        
+        /* Team Section */
+        .team {
+            background-color: var(--white);
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+        }
+        
+        .team-member {
+            text-align: center;
+        }
+        
+        .member-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light-text);
+            margin: 0 auto 15px;
+        }
+        
+        .member-name {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        .member-role {
+            color: var(--light-text);
+            margin-bottom: 15px;
+        }
+        
+        /* Story Section */
+        .story {
+            background-color: var(--secondary-color);
+        }
+        
+        .story-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .timeline {
+            margin-top: 50px;
+            position: relative;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            height: 100%;
+            width: 2px;
+            background-color: var(--primary-color);
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item {
+            display: flex;
+            justify-content: flex-end;
+            padding-right: 50%;
+            position: relative;
+            margin-bottom: 50px;
+        }
+        
+        .timeline-item:nth-child(even) {
+            justify-content: flex-start;
+            padding-right: 0;
+            padding-left: 50%;
+        }
+        
+        .timeline-content {
+            width: 80%;
+            padding: 20px;
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .timeline-date {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .timeline-dot {
+            width: 20px;
+            height: 20px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 20px;
+        }
+        
+        /* Contact Section */
+        .contact {
+            background-color: var(--white);
+            text-align: center;
+        }
+        
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        textarea.form-control {
+            resize: vertical;
+            min-height: 150px;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #2c2c2e;
+            color: var(--white);
+            padding: 50px 0 20px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-col {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .footer-col h4 {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .footer-col ul {
+            list-style: none;
+        }
+        
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-col ul a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-col ul a:hover {
+            color: var(--white);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        /* Media Queries */
+        @media (max-width: 992px) {
+            .hero-image {
+                width: 50%;
+                right: -50px;
+            }
+            
+            .timeline::before {
+                left: 30px;
+            }
+            
+            .timeline-item,
+            .timeline-item:nth-child(even) {
+                justify-content: flex-start;
+                padding-right: 0;
+                padding-left: 80px;
+            }
+            
+            .timeline-dot {
+                left: 30px;
+            }
+            
+            .timeline-content {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+                transform: translateY(-100%);
+                opacity: 0;
+                transition: all 0.3s ease;
+                z-index: 999;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            
+            .nav-links li {
+                margin: 15px 0;
+            }
+            
+           /* Hero Section */
+           .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px; /* space between text and image */
+    padding: 20px;
+}
+
+.hero-content {
+    flex: 1;
+    text-align: left;
+    margin-left: -20px; /* shift text slightly to the left */
+}
+
+.hero-image {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+}
+            h1 {
+                font-size: 36px;
+            }
+            
+            h2 {
+                font-size: 28px;
+            }
+            
+            .subtitle {
+                font-size: 20px;
+            }
+            
+            section {
+                padding: 60px 0;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .features-grid,
+            .gallery-grid,
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline-content {
+                padding: 15px;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Menu Toggle
+            const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (mobileMenuToggle) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    navLinks.classList.toggle('active');
+                });
+            }
+            
+            // Smooth Scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    if (navLinks.classList.contains('active')) {
+                        navLinks.classList.remove('active');
+                    }
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Feature Card Interaction
+            const featureCards = document.querySelectorAll('.feature-card');
+            featureCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            });
+            
+            // Simple Parallax Effect
+            window.addEventListener('scroll', function() {
+                const scrollTop = window.pageYOffset;
+                const parallaxElements = document.querySelectorAll('.parallax');
+                
+                parallaxElements.forEach(element => {
+                    const speed = element.dataset.speed || 0.5;
+                    element.style.transform = `translateY(${scrollTop * speed}px)`;
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <img src="/Users/yash/Downloads/TLauncher/WhatsApp Image 2025-04-30 at 14.45.43.jpeg" alt="Logo" width="80" height="80" style="vertical-align: middle;">
+                    QuREE
+                </div>
+                <div class="mobile-menu-toggle">≡</div>
+                <ul class="nav-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#advantages">Advantages</a></li>
+                    <li><a href="#gallery">Gallery</a></li>
+                    <li><a href="#team">Team</a></li>
+                    <li><a href="#story">Story</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <h1>QuREE</h1>
+                <p class="subtitle">Quasi Real Environment Emulator</p>
+                <p class="description">Experience immersive telepresence with our cutting-edge virtual telepresence robot. QuREE bridges physical distances with unprecedented realism.</p>
+                <a href="#features" class="btn">Discover Features</a>
+            </div>
+            
+        </div>
+    </section>
+    
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2>Innovative Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>180° X 135° Immersion</h3>
+                    <p>Experience full 180-degree(horizontal)and 135-degree(vertical) visual  immersion that puts you in the room with unparalleled realism.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Ultra-low Latency</h3>
+                    <p>Our proprietary technology ensures minimal delay between physical environments and virtual representation.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>Intuitive Controls</h3>
+                    <p>Navigate remote environments with natural gestures and intuitive interface designed for seamless interaction.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔋</div>
+                    <h3>Rechargeable Battery</h3>
+                    <p>Enjoy uninterrupted usage with built-in rechargeable batteries that are easy to charge and designed for user convenience.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚂</div>
+                    <h3>Smart locomotion </h3>
+                    <p>Enables the robot to move intelligently and adapt to its environment using obstacle avoidance and line following.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔎</div>
+                    <h3>Object recognition</h3>
+                    <p>Makes it aware about its environment facilitating navigation and surveillance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Advantages Section -->
+    <section class="advantages" id="advantages">
+        <div class="container">
+            <h2>Why Choose QuREE</h2>
+            <div class="advantage-item">
+                <div class="advantage-icon">💼</div>
+                <div>
+                    <h3>Remote Facility Inspection</h3>
+                    <p>Line following and obstacle avoidance let the robot safely navigate predefined paths in factories, labs, or warehouses.</p>
+                </div>
+            </div>
+            <div class="advantage-item">
+                <div class="advantage-icon">🎓</div>
+                <div>
+                    <h3>Revolutionary Distance Learning</h3>
+                    <p>Students can attend labs, workshops, and practical sessions remotely while experiencing the environment as if they were physically present.</p>
+                </div>
+            </div>
+            <div class="advantage-item">
+                <div class="advantage-icon">🌡️</div>
+                <div>
+                    <h3>Environmental Monitoring</h3>
+                    <p>With the temperature and humidity sensor, it can monitor environmental conditions in:
+                        Data centers
+                        Greenhouses
+                        Medical storage areas</p>
+                </div>
+            </div>
+            <div class="advantage-item">
+                <div class="advantage-icon">⚔️</div>
+                <div>
+                    <h3>Stealth Missions and Covert Surveillance</h3>
+                    <p>Obstacle avoidance ensures silent, smooth navigation without collisions that could reveal its presence. Auto headlights can be disabled or activated only when necessary to maintain low visibility.</p>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- Product Gallery -->
+    <section class="gallery" id="gallery">
+        <div class="container">
+            <h2>See QuREE in Action</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <div class="gallery-img">
+                        <img src="/Users/yash/Downloads/TLauncher/WhatsApp Image 2025-05-09 at 08.29.20.jpeg" alt="QuREE Front View"
+                        height = "250"
+                        width = "380"
+                        >
+                    </div>
+                    <div class="gallery-caption">
+                        <h3>Front View</h3>
+                        <p>The sleek design houses advanced sensors and cameras</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-img">
+                        <img src="/Users/yash/Downloads/TLauncher/WhatsApp Image 2025-05-08 at 23.56.04.jpeg" alt="QuREE Interface"
+                        
+                        
+                        height = "250"
+                        width = "100">
+                    </div>
+                    <div class="gallery-caption">
+                        <h3>User Interface</h3>
+                        <p>The intuitive control panel allows for seamless navigation</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-img">
+                        <img src="/Users/yash/Downloads/TLauncher/robo.png" alt="QuREE in Meeting"
+                        height="250"
+                        width="380">
+                    </div>
+                    <div class="gallery-caption">
+                        <h3>CAD Model</h3>
+                        <p>Tentative design of robot.</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-img">
+                        <img src="/Users/yash/Downloads/TLauncher/WhatsApp Image 2025-05-09 at 08.36.23.jpeg" alt="QuREE Components"
+                        height="250"
+                        width="380">
+                    </div>
+                    <div class="gallery-caption">
+                        <h3>Internal Components</h3>
+                        <p>The advanced technology that powers the immersive experience</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team" id="team">
+        <div class="container">
+            <h2>Meet the Team</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-img">
+                        <img src="/Users/yash/Downloads/TLauncher/WhatsApp Image 2025-05-08 at 23.17.44.png" alt="Team Member 1"
+                        height="150"
+                        width="150"
+                        >
+                    </div>
+                    <h3 class="member-name">Yash Vashisht</h3>
+                    <p class="member-role">Project Lead</p>
+                    <p>Robotics specialist with a focus on human-computer interaction.</p>
+                </div>
+                <div class="team-member">
+                    <div class="member-img">
+                        <img src="/Users/yash/Downloads/TLauncher/WhatsApp Image 2025-05-08 at 23.47.21.png" alt="Team Member 2"
+                        height="150"
+                        width="150">
+                    </div>
+                    <h3 class="member-name">Harshit Singh</h3>
+                    <p class="member-role">Hardware Engineer</p>
+                    <p>Expert in sensor fusion and embedded systems development.</p>
+                </div>
+                <div class="team-member">
+                    <div class="member-img">
+                        <img src="/Users/yash/Downloads/TLauncher/WhatsApp Image 2025-05-08 at 23.42.06.png" alt="Team Member 3"
+                        height="150"
+                        width="150">
+                    </div>
+                    <h3 class="member-name">Priyanshu Pratik Senapati</h3>
+                    <p class="member-role">Software Architect</p>
+                    <p>Specializes in low-latency networking and real-time systems.</p>
+                </div>
+                <div class="team-member">
+                    <div class="member-img">
+                        <img src="/Users/yash/Downloads/TLauncher/WhatsApp Image 2025-05-08 at 23.40.33.png" alt="Team Member 4"
+                        height="150"
+                        width="150">
+                    </div>
+                    <h3 class="member-name">Shaurya</h3>
+                    <p class="member-role">Debugging & Assembly </p>
+                    <p>Identifying and fixing errors in code and assembly of parts, robot designing.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Story Section -->
+    <section class="story" id="story">
+        <div class="container">
+            <h2>Our Journey</h2>
+            <div class="story-content">
+                <p>The QuREE project was born from a simple observation: To bridge the gap between physical and remote presence, enabling immersive interaction through VR and autonomous mobility. It combines smart sensing, environment awareness, and telepresence to perform tasks in real-world environments safely and efficiently.</p>
+                
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">February 2025</div>
+                            <h3>Project Inception</h3>
+                            <p>Initial concept development and feasibility studies during our lab briefings.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">March - April 2025</div>
+                            <h3>Prototype Development</h3>
+                            <p>Development of hardware and functioning code.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">April - May 2025</div>
+                            <h3>Technology Integration</h3>
+                            <p>PCB design and soldering, integration of software and hardware. Assembly of the project.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">May 2025</div>
+                            <h3>Testing & Debugging</h3>
+                            <p>Extensive testing to refine the interface and interaction model. Fixing of various bugs faced in line folloowing and obstacle avoidance.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">May 2025</div>
+                            <h3>Final Product</h3>
+                            <p>QuREE reaches its current form, ready for showcase at the Engineering Expo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2>Get in Touch</h2>
+            <div class="contact-form">
+                <p>Interested in learning more about QuREE or our engineering project? Reach out to our team!</p>
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Your Name">
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-control" placeholder="Your Email">
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" placeholder="Your Message"></textarea>
+                    </div>
+                    <button type="submit" class="btn">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h4>QuREE</h4>
+                    <p>Quasi Real Environment Emulator - A next-generation virtual telepresence solution developed by engineering students.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#advantages">Advantages</a></li>
+                        <li><a href="#team">Team</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="mailto:team@quree.edu">team@quree.edu</a></li>
+                        <li><a href="tel:7838897258">78388 97258</a></li>
+                        <li>IIT Delhi</li>
+                    </ul>
+                </div>
+            </div>
